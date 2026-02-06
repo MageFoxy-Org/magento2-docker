@@ -1,54 +1,103 @@
-Nginx: 1.18
-Php: 8.3.19-fpm
-Mysql: 8.0.41
-Redis: 7.2
-elasticsearch: 8.16.6
-Magento: 2.4.7
+# Magento 2.4.8 Docker Environment - Fresh Installation
 
+A complete Docker-based environment for Magento 2 development, configured with Nginx, PHP-FPM, MySQL, Valkey, and OpenSearch.
 
---> DOING
-## Steps:
-1. Create folders:
-    - db_data
-    - src
-    - mysql-dump
-    - logs/nginx
-2. Copy Magento 2.4.7 project to src/ folder
-    - use composer
-    cd src && composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=2.4.8  --ignore-platform-reqs ./
-    then rename nginx.conf.sample to nginx.conf
-    - git clone
-    - or copy
-    - or use scp to download from server.
-3. Copy file database to import mysql-dump/ folder and rename it to magento.sql
-4. docker-compose build mage248_php --no-cache
-5. docker-compose up -d
-6. access mysql and change base_url
-update core_config_data set value = 'http://mage248.local:8080/' where path = 'web/unsecure/base_url';
-update core_config_data set value = 'http://mage248.local:8080/' where path = 'web/secure/base_url';
+## 🛠 Technology Stack
 
-7. Note:
-If install a new Magento site from scratch
-step 7.1: docker exec -it mage248_php bash
-step 7.2: 
+This environment is built with the following components:
+
+| Component | Version | Service Name |
+|-----------|---------|--------------|
+| **Magento** | 2.4.8 | - |
+| **Nginx** | 1.18 | `mage248_nginx` |
+| **PHP** | 8.3.19-fpm | `mage248_php` |
+| **MySQL** | 8.0.41 | `mage248_mysql` |
+| **Valkey** (Redis) | 8.0 | `mage248_valkey` |
+| **OpenSearch** | 3.0 | `mage248_opensearch` |
+| **PhpMyAdmin** | 5.2 | `mage248_phpmyadmin` |
+
+## 🚀 Installation & Setup
+
+### 1. Prepare Directory Structure
+Create the necessary directories for persistence and logs:
+
+```bash
+mkdir -p db_data src logs/nginx osdata
+```
+
+### 2. Setup Source Code
+Install the Magento 2 source code into the `src/` directory.
+
+**Option A: Using Composer (Recommended)**
+```bash
+cd src
+```
+
+```bash
+composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=2.4.8 --ignore-platform-reqs ./
+```
+
+```bash
+mv nginx.conf.sample nginx.conf
+```
+> **Note**: This requires valid keys from [repo.magento.com](https://repo.magento.com/).
+
+**Option B: Existing Source**
+Clone your repository or copy your existing Magento files into the `src/` folder.
+
+### 3. Build and Start Containers
+Build the PHP container and start the environment:
+
+```bash
+docker-compose build mage248_php --no-cache
+docker-compose up -d
+```
+
+### 4. Fresh Installation
+Once the environment is running, update the base URLs in the database to match the local environment.
+
+**Database Connection**
+- **Host**: `127.0.0.1` (Port: `3307`)
+- **User**: `magento`
+- **Password**: `magento123`
+- **Database**: `magento`
+
+**Access the PHP container**:
+
+```bash
+docker exec -it mage248_php bash
+```
+
+**Run the installation command**:
+
+```bash
 bin/magento setup:install \
---base-url=http://mage248.local \
---db-host=mage248_mysql \
---db-name=magento \
---db-user=magento \
---db-password=magento123 \
---admin-firstname=admin \
---admin-lastname=admin \
---admin-email=admin@admin.com \
---admin-user=admin \
---admin-password=admin123 \
---language=en_US \
---currency=USD \
---timezone=America/Chicago \
---use-rewrites=1 \
---search-engine=opensearch \
---opensearch-host=opensearch \
---opensearch-port=9200 \
---opensearch-index-prefix=magento2 \
---opensearch-timeout=15
+    --base-url=http://mage248.local \
+    --db-host=mage248_mysql \
+    --db-name=magento \
+    --db-user=magento \
+    --db-password=magento123 \
+    --admin-firstname=admin \
+    --admin-lastname=admin \
+    --admin-email=admin@admin.com \
+    --admin-user=admin \
+    --admin-password=admin123 \
+    --language=en_US \
+    --currency=USD \
+    --timezone=America/Chicago \
+    --use-rewrites=1 \
+    --search-engine=opensearch \
+    --opensearch-host=opensearch \
+    --opensearch-port=9200 \
+    --opensearch-index-prefix=magento2 \
+    --opensearch-timeout=15
+```
+
+## 📝 Usage Notes
+
+- **PhpMyAdmin** is available at `http://localhost:81/index.php`
+- **Nginx** listens on `http://localhost:80` (or configured port)
+- **MySQL** is exposed on port `3307`
+- **Valkey** is exposed on port `6379`
+- **OpenSearch** is exposed on port `9200`
 
