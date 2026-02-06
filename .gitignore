@@ -1,0 +1,10 @@
+.env
+*.csv
+.venv
+*.tgz
+src/
+db_data/
+src/
+mysql-dump/
+logs/
+osdata/
