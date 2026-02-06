@@ -25,16 +25,27 @@ Create the necessary directories for persistence and logs:
 mkdir -p db_data src logs/nginx osdata
 ```
 
-### 2. Setup Source Code
+### 2. Build and Start Containers
+Build the PHP container and start the environment:
+
+```bash
+docker-compose build mage248_php --no-cache
+docker-compose up -d
+```
+
+### 3. Setup Source Code
 Install the Magento 2 source code into the `src/` directory.
 
 **Option A: Using Composer (Recommended)**
+
+***Access the PHP container***:
+
 ```bash
-cd src
+docker exec -it mage248_php bash
 ```
 
 ```bash
-composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=2.4.8 --ignore-platform-reqs ./
+composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=2.4.8 ./
 ```
 
 ```bash
@@ -45,12 +56,18 @@ mv nginx.conf.sample nginx.conf
 **Option B: Existing Source**
 Clone your repository or copy your existing Magento files into the `src/` folder.
 
-### 3. Build and Start Containers
-Build the PHP container and start the environment:
+***Access the PHP container***:
 
 ```bash
-docker-compose build mage248_php --no-cache
-docker-compose up -d
+docker exec -it mage248_php bash
+```
+
+```bash
+composer install
+```
+
+```bash
+mv nginx.conf.sample nginx.conf
 ```
 
 ### 4. Fresh Installation
@@ -61,12 +78,6 @@ Once the environment is running, update the base URLs in the database to match t
 - **User**: `magento`
 - **Password**: `magento123`
 - **Database**: `magento`
-
-**Access the PHP container**:
-
-```bash
-docker exec -it mage248_php bash
-```
 
 **Run the installation command**:
 
