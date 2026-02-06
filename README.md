@@ -25,11 +25,10 @@ Create the necessary directories for persistence and logs:
 mkdir -p db_data src logs/nginx osdata
 ```
 
-### 2. Build and Start Containers
-Build the PHP container and start the environment:
+### 2. Start Containers
+Start the environment:
 
 ```bash
-docker-compose build mage248_php --no-cache
 docker-compose up -d
 ```
 
@@ -111,4 +110,11 @@ bin/magento setup:install \
 - **MySQL** is exposed on port `3307`
 - **Valkey** is exposed on port `6379`
 - **OpenSearch** is exposed on port `9200`
+- **Magento 2.4.8** is exposed on `http://mage248.local`
 
+
+## Build Images
+
+```bash
+docker-compose build mage248_php --no-cache
+```
