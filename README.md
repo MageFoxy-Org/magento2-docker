@@ -25,10 +25,11 @@ Create the necessary directories for persistence and logs:
 mkdir -p db_data src logs/nginx osdata
 ```
 
-### 2. Start Containers
-Start the environment:
+### 2. Build & Start Containers
+Build the PHP container and start the environment:
 
 ```bash
+docker-compose build mage248_php --no-cache
 docker-compose up -d
 ```
 
